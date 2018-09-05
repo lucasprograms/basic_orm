@@ -1,6 +1,7 @@
 require_relative 'questions_db'
 require_relative 'question'
 require_relative 'reply'
+require_relative 'question_follow'
 
 class User
   attr_accessor :fname, :lname
@@ -61,5 +62,9 @@ class User
     SQL
 
     data.map { |datum| Reply.new(datum) }
+  end
+
+  def followed_questions
+    QuestionFollow.followed_questions_for_user_id(@id)
   end
 end

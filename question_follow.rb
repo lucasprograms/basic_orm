@@ -1,5 +1,6 @@
 require_relative 'questions_db'
 require_relative 'user'
+require_relative 'question'
 
 class QuestionFollow
   attr_accessor :question_id, :follower_id
@@ -36,5 +37,22 @@ class QuestionFollow
     SQL
     
     data.map { |datum| User.new(datum) }
+  end
+
+  def QuestionFollow.followed_questions_for_user_id(user_id)
+    data = QuestionsDatabase.instance.execute(<<-SQL, user_id)
+      SELECT
+        *
+      FROM
+        users
+      JOIN
+        question_follows ON users.id = question_follows.follower_id
+      JOIN
+        questions ON questions.id = question_follows.question_id
+      WHERE
+        question_follows.follower_id = ?
+    SQL
+
+    data.map { |datum| Question.new(datum) }
   end
 end

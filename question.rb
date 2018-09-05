@@ -1,6 +1,7 @@
 require_relative 'questions_db'
 require_relative 'user'
 require_relative 'reply'
+require_relative 'question_follow'
 
 class Question
   attr_accessor :title, :body, :author_id
@@ -62,5 +63,9 @@ class Question
     SQL
 
     data.map { |datum| Reply.new(datum) }
+  end
+
+  def followers
+    QuestionFollow.followers_for_question_id(@id)
   end
 end
