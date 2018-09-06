@@ -2,6 +2,7 @@ require_relative 'questions_db'
 require_relative 'question'
 require_relative 'reply'
 require_relative 'question_follow'
+require_relative 'question_like'
 
 class User
   attr_accessor :fname, :lname
@@ -66,5 +67,24 @@ class User
 
   def followed_questions
     QuestionFollow.followed_questions_for_user_id(@id)
+  end
+
+  def liked_questions
+    QuestionLike.liked_questions_for_user_id(@id)
+  end
+
+  def average_karma
+    data = QuestionsDatabase.instance.execute(<<-SQL, @id, @id)
+      SELECT
+        CAST(COUNT(question_likes.id) AS FLOAT) / (SELECT COUNT(questions.id) FROM questions WHERE questions.author_id = ?) AS average_karma
+      FROM
+        question_likes
+      JOIN
+        questions ON questions.id = question_likes.question_id
+      WHERE
+        questions.author_id = ?
+    SQL
+
+    data.first['average_karma']
   end
 end

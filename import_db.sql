@@ -68,7 +68,8 @@ VALUES
   ('CATS', 'CATS CATS CATS', 1),
   ('DOGGOS', 'DOGGOS DOGGOS DOGGOS', 2),
   ('RATS', 'RATS RATS RATS', 1),
-  ('PANTS', 'PANTS PANTS PANTS', 4);
+  ('PANTS', 'PANTS PANTS PANTS', 4),
+  ('GLOBS', 'GLOBS GLOBS GLOBS', 2);
 
 INSERT INTO
   question_follows (question_id, follower_id)
