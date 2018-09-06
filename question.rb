@@ -3,8 +3,9 @@ require_relative 'user'
 require_relative 'reply'
 require_relative 'question_follow'
 require_relative 'question_like'
+require_relative 'model_base'
 
-class Question
+class Question < ModelBase
   attr_accessor :title, :body, :author_id
 
   def initialize(options)
@@ -12,6 +13,28 @@ class Question
     @title = options['title']
     @body = options['body']
     @author_id = options['author_id']
+  end
+
+  def save
+    if @id
+      QuestionsDatabase.instance.execute(<<-SQL, @title, @body, @author_id, @id)
+        UPDATE
+          questions
+        SET
+          title = ?, body = ?, author_id = ?
+        WHERE
+          id = ?      
+      SQL
+    else
+      QuestionsDatabase.instance.execute(<<-SQL, @title, @body, @author_id)
+        INSERT INTO
+          questions (title, body, author_id)
+        VALUES
+          (?, ?, ?)
+      SQL
+
+      @id = QuestionsDatabase.instance.last_insert_row_id
+    end
   end
 
   def Question.find_by_id(id)

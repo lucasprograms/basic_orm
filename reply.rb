@@ -1,8 +1,9 @@
 require_relative 'questions_db'
 require_relative 'user'
 require_relative 'question'
+require_relative 'model_base'
 
-class Reply
+class Reply < ModelBase
   attr_accessor :body, :question_id, :parent_reply_id, :author_id
 
   def initialize(options)
@@ -11,19 +12,6 @@ class Reply
     @question_id = options['question_id']
     @parent_reply_id = options['parent_reply_id']
     @author_id = options['author_id']
-  end
-
-  def Reply.find_by_id(id)
-    data = QuestionsDatabase.instance.execute(<<-SQL, id)
-      SELECT
-        *
-      FROM
-        replies
-      WHERE
-        id = ?
-      SQL
-
-    Reply.new(data.first)
   end
 
   def Reply.find_by_user_id(user_id)
